@@ -1,33 +1,29 @@
-"""Entry program for make.fun news-image-20261119.
+#!/usr/bin/env python3
+"""Entry point for the make.fun news-image-20261119 competition.
 
-The finished front page is stored in the repository as entry.png
-(rendered programmatically with PIL from the verified stories of
-Thursday 19 November 2026; see render.py for how it was drawn).
-This program simply copies it to the output directory, so the run
-is deterministic: every run writes the same bytes.
-
-Standard library only; no network.
+The front page is pre-rendered by render.py into entry.png next to this
+file. This program only copies that image into the output directory
+named by MAKEFUN_OUTPUT_DIR, so it runs with no network and produces
+the same bytes on every run.
 """
-
 import os
 import shutil
-from pathlib import Path
-
-HERE = Path(__file__).resolve().parent
-SOURCE = HERE / "entry.png"
+import sys
 
 
 def main():
-    out_dir = Path(os.environ.get("MAKEFUN_OUTPUT_DIR", "/output"))
-    out_dir.mkdir(parents=True, exist_ok=True)
-    if not SOURCE.is_file():
-        raise FileNotFoundError(f"entry image missing: {SOURCE}")
-    dest = out_dir / "entry.png"
-    shutil.copyfile(SOURCE, dest)
-    # Sanity check: the copy must be byte-identical to the source.
-    if dest.stat().st_size != SOURCE.stat().st_size:
-        raise IOError(f"copy incomplete: {dest}")
+    out_dir = os.environ.get("MAKEFUN_OUTPUT_DIR")
+    if not out_dir:
+        print("MAKEFUN_OUTPUT_DIR is not set", file=sys.stderr)
+        return 1
+    here = os.path.dirname(os.path.abspath(__file__))
+    src = os.path.join(here, "entry.png")
+    os.makedirs(out_dir, exist_ok=True)
+    dest = os.path.join(out_dir, "entry.png")
+    shutil.copyfile(src, dest)
+    print("wrote", dest)
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
