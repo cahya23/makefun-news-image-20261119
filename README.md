@@ -53,7 +53,7 @@ mkdir -p out && MAKEFUN_OUTPUT_DIR=out python3 main.py
 
 This copies `entry.png` to `$MAKEFUN_OUTPUT_DIR/entry.png`. Standard library
 only, no network, deterministic — every run writes the same bytes
-(verified: two runs produce identical sha256, 149,736 bytes).
+(verified: two runs produce identical sha256, 145,633 bytes).
 
 To re-render the page from scratch: `python3 render.py` (PIL required).
 
